@@ -1,0 +1,127 @@
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.register-logo {
+  color: #1877f2;
+  font-size: 50px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.register-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  width: 400px;
+}
+
+.register-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.register-subtitle {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.register-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.register-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.register-input {
+  border-radius: 6px !important;
+  padding: 10px 12px !important;
+  font-size: 15px !important;
+}
+
+.register-gender {
+  display: flex;
+  gap: 10px;
+}
+
+.gender-option {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  flex: 1;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+/* Khi hover */
+.gender-option:hover {
+  border-color: #999;
+}
+
+/* Khi được chọn */
+.ant-radio-wrapper-checked.gender-option {
+  border: 2px solid #1877f2; /* xanh Facebook */
+  background: #f0f6ff;
+}
+
+.register-note {
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.btn-register {
+  background-color: #42b72a !important;
+  border-color: #42b72a !important;
+  color: #fff !important;
+  font-weight: bold !important;
+  height: 45px !important;
+  font-size: 16px !important;
+}
+
+.register-login-link {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.register-login-link a {
+  color: #1877f2;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* Responsive iPhone 5 */
+@media (max-width: 360px) {
+  .register-box {
+    width: 100%;
+    max-width: 300px;
+    padding: 15px;
+  }
+
+  .register-title {
+    font-size: 20px;
+  }
+
+  .register-input {
+    font-size: 14px !important;
+    padding: 8px 10px !important;
+  }
+
+  .btn-register {
+    font-size: 14px !important;
+    height: 40px !important;
+  }
+}
