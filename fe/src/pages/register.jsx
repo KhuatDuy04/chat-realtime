@@ -145,7 +145,7 @@ const RegisterPage = () => {
                 { type: "email", message: "Email không hợp lệ!" }
               ]}
           >
-            <Input placeholder="Số di động hoặc email" className="register-input" />
+            <Input placeholder="Email" className="register-input" />
           </Form.Item>
 
           {/* Password */}

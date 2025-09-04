@@ -23,13 +23,9 @@ const LoginPage = () => {
       });
       setAuth({
         isAuthenticated: true,
-        user: {
-          id: res?.user?._id,
-          email: res?.user?.email ?? "",
-          name: res?.user?.name ?? "",
-        },
+        user: { ...res.user },
       });
-      connectSocket(res.user.id);
+      connectSocket(res.user._id);
       navigate("/");
     } else {
       notification.error({
@@ -58,7 +54,7 @@ const LoginPage = () => {
               name="email"
               rules={[{ required: true, message: "Please input your email!" }]}
             >
-              <Input placeholder="Email hoặc số điện thoại" size="large" />
+              <Input placeholder="Email" size="large" />
             </Form.Item>
 
             <Form.Item

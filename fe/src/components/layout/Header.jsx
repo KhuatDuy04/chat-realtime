@@ -81,14 +81,14 @@ const Header = () => {
             <li className="tyn-appbar-item">
               <a className="d-inline-flex dropdown-toggle" data-bs-auto-close="outside" data-bs-toggle="dropdown" href="#" data-bs-offset="0,10">
                 <div className="tyn-media tyn-size-lg tyn-circle">
-                  <img src="../../src/assets/images/avatar/3.jpg" alt="" />
+                  <img src={auth?.user?.profilePic != "" ? auth?.user?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                 </div>
               </a>{/* .dropdown-toggle */}
               <div className="dropdown-menu dropdown-menu-end">
                 <div className="dropdown-gap">
                   <div className="tyn-media-group">
                     <div className="tyn-media tyn-size-lg">
-                      <img src="../../src/assets/images/avatar/3.jpg" alt="" />
+                      <img src={auth?.user?.profilePic != "" ? auth?.user?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                     </div>
                     <div className="tyn-media-col">
                       <div className="tyn-media-row">

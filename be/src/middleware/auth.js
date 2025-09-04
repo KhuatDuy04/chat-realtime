@@ -17,6 +17,9 @@ const auth = (req, res, next) => {
           _id: decoded.id,
           email: decoded.email,
           name: decoded.name,
+          gender: decoded.gender,
+          birthday: decoded.birthday,
+          profilePic: decoded.profilePic,
         }
         // console.log("check decoded", decoded.id);
         next();

@@ -68,7 +68,7 @@ const SideBar = ({ setMessage, setSender, onlineUsers }) => {
                             <li className="tyn-aside-item js-toggle-main" onClick={() => fetchMessage(user)}>
                                 <div className="tyn-media-group">
                                 <div className="tyn-media tyn-size-lg">
-                                    <img src="../../src/assets/images/avatar/2.jpg" alt="" />
+                                    <img src={user.profilePic != "" ? user.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                                 </div>{/* .tyn-media */}
                                 <div className="tyn-media-col">
                                     <div className="tyn-media-row">
@@ -580,7 +580,7 @@ const SideBar = ({ setMessage, setSender, onlineUsers }) => {
                     <li className="tyn-aside-item js-toggle-main">
                         <div className="tyn-media-group">
                         <div className="tyn-media tyn-size-lg">
-                            <img src="../../src/assets/images/avatar/2.jpg" alt="" />
+                            <img src="../../src/assets/images/avatar/no-image.png" alt="" />
                         </div>
                         <div className="tyn-media-col">
                             <div className="tyn-media-row">

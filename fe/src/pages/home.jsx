@@ -102,10 +102,10 @@ const HomePage = () => {
                         </ul>
                         <div className="tyn-media-group">
                         <div className="tyn-media tyn-size-lg d-none d-sm-inline-flex">
-                            <img src="../../src/assets/images/avatar/1.jpg" alt="" />
+                            <img src={sender?.profilePic != "" ? sender?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                         </div>{/* .tyn-media */}
                         <div className="tyn-media tyn-size-rg d-sm-none">
-                            <img src="../../src/assets/images/avatar/1.jpg" alt="" />
+                            <img src={sender?.profilePic != "" ? sender?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                         </div>{/* .tyn-media */}
                         <div className="tyn-media-col">
                             <div className="tyn-media-row">
@@ -179,7 +179,7 @@ const HomePage = () => {
                             {!isMe && (
                                 <div className="tyn-reply-avatar">
                                 <div className="tyn-media tyn-size-md tyn-circle">
-                                    <img src="../../src/assets/images/avatar/2.jpg" alt="" />
+                                    <img src={sender?.profilePic != "" ? sender?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                                 </div>
                                 </div>
                             )}

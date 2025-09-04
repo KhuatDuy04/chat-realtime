@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cloudinary = require("../config/cloudinary");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -43,7 +44,14 @@ const loginService = async (email, password) => {
       return { EC: 2, EM: "Email/password không hợp lệ" };
     }
 
-    const payload = { id: user._id, email: user.email, name: user.name };
+    const payload = {
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      gender: user.gender,
+      birthday: user.birthday,
+      profilePic: user.profilePic,
+    };
     const access_token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRE,
     });
@@ -52,7 +60,7 @@ const loginService = async (email, password) => {
       EC: 0,
       EM: "Đăng nhập thành công",
       access_token,
-      user: { id: user._id, email: user.email, name: user.name },
+      user: payload,
     };
   } catch (error) {
     console.log(error);
@@ -70,8 +78,69 @@ const getUserService = async () => {
   }
 };
 
+const updateProfileService = async (data) => {
+  try {
+    const userId = data._id;
+    const { _id, confirmPassword, oldPassword, newPassword, ...rest } = data;
+
+    let updateData = { ...rest };
+
+    if (oldPassword && newPassword && confirmPassword) {
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({ message: "Mật khẩu mới không khớp" });
+      }
+
+      const user = await User.findById(userId);
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: "Không tìm thấy user có id: ", userId });
+      }
+
+      const isMatchPassword = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatchPassword) {
+        return res.status(400).json({ message: "Mật khẩu cũ không đúng" });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      updateData.password = hashedPassword;
+    }
+
+    const updateUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+    });
+
+    return { user: updateUser };
+  } catch (error) {
+    return { error: true, status: 500, message: error.message };
+  }
+};
+
+const updateProfilePicService = async (profilePic, userId) => {
+  try {
+    if (!profilePic) {
+      return res.status(400).json({ message: "Chưa tải ảnh lên" });
+    }
+
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+    const updateUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: uploadResponse.secure_url },
+      { new: true }
+    );
+    return { user: updateUser };
+  } catch (error) {
+    return { error: true, status: 500, message: error.message };
+  }
+};
+
 module.exports = {
   createUserService,
   loginService,
   getUserService,
+  updateProfileService,
+  updateProfilePicService,
 };

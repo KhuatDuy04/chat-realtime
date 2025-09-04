@@ -11,7 +11,7 @@ const createUserApi = (name, email, password, gender, birthday) => {
 const loginApi = (email, password) => {
     const URL_API = "/v1/api/login"
     const data = {
-        name, email, password
+        email, password
     }
     return axios.post(URL_API, data)
 }
@@ -39,6 +39,16 @@ const sendMessage = (text, receiverId) => {
     return axios.post(URL_API, data)
 }
 
+const updateProfile = (user) => {
+    const URL_API = "/v1/api/update-profile"
+    return axios.put(URL_API, user)
+}
+
+const updatePic = (user) => {
+    const URL_API = "/v1/api/update-profile-pic"
+    return axios.put(URL_API, user)
+}
+
 export {
-    createUserApi, loginApi, getUserApi, getUsersForSidebar, getMessage, sendMessage
+    createUserApi, loginApi, getUserApi, getUsersForSidebar, getMessage, sendMessage, updateProfile, updatePic
 }

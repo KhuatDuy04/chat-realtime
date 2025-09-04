@@ -20,6 +20,9 @@ app.use(
 app.use(express.json()) // for json
 app.use(express.urlencoded({ extended: true })) // for form data
 
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
 //config cookie-parser
 // app.use(cookieParser());
 

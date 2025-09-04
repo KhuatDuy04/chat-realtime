@@ -43,9 +43,12 @@ function App() {
         setAuth({
           isAuthenticated: true,
           user: {
-            id: res._id,
+            _id: res._id,
             email: res.email,
             name: res.name,
+            gender: res.gender,
+            birthday: res.birthday,
+            profilePic: res.profilePic,
           },
         });
 

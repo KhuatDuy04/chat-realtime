@@ -1,5 +1,4 @@
-const { default: cloudinary } = require("../config/cloudinary");
-const { createUserService, loginService, getUserService } = require("../services/userService");
+const { createUserService, loginService, getUserService, updateProfileService, updateProfilePicService } = require("../services/userService");
 
 const createUser = async (req, res) => {
     const {name, email, password, gender, birthday} = req.body;
@@ -23,24 +22,25 @@ const getAccount = async (req, res) => {
 }
 
 const updateProfile = async (req, res) => {
-    try {
-        const {profilePic} = req.body;
-        const userId = req.user._id;
+    const data = req.body;
+    const result = await updateProfileService(data);
 
-        if (!profilePic) {
-            return res.status(400).json({message: "Profile pic is required"})
-        }
-
-        const uploadResponse = await cloudinary.uploader.upload(profilePic)
-
-        const updateUser = await User.findByIdAndUpdate(userId, {profilePic: uploadResponse.secure_url}, {new:true})
-    
-        res.status(200).json(updateUser)
-    } catch (error) {
-        res.status(500).json({message: "Internal server error"})
+    if (result.error) {
+        return res.status(result.status).json({ message: result.message });
     }
+
+    return res.status(200).json(result.user);
+}
+
+const updateProfilePic = async (req, res) => {
+    const {profilePic, userId} = req.body;
+    const user = await updateProfilePicService(profilePic, userId);
+    if (user.error) {
+        return res.status(user.status).json({ message: user.message });
+    }
+    res.status(200).json(user)
 }
 
 module.exports = {
-    createUser, handleLogin, getUser, getAccount, updateProfile
+    createUser, handleLogin, getUser, getAccount, updateProfile, updateProfilePic
 }
