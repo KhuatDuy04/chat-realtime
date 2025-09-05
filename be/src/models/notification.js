@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const messageSchema = new mongoose.Schema(
+const notificationSchema = new mongoose.Schema(
   {
     senderId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -15,13 +15,16 @@ const messageSchema = new mongoose.Schema(
     text: {
         type: String,
     },
-    image: {
+    type: {
         type: String,
+    },
+    is_read: {
+        type: Boolean,
     }
   },
   { timestamps: true }
 );
 
-const Message = mongoose.model("message", messageSchema);
+const Notification = mongoose.model("notification", notificationSchema);
 
-module.exports = Message;
+module.exports = Notification;

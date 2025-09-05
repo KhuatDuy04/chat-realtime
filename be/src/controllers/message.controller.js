@@ -1,6 +1,7 @@
 const Message = require("../models/message");
 const User = require("../models/user");
 const cloudinary = require('../config/cloudinary');
+const Notification = require("../models/notification");
 
 const getUsersForSidebar = async (req, res) => {
   try {
@@ -47,14 +48,20 @@ const sendMessage = async (req, res) => {
         imageUrl = uploadResponse;
     }
 
-    const newMessage = new Message ({
+    const newMessage = await Message.create({
         senderId,
         receiverId,
         text,
         image: imageUrl,
     });
 
-    await newMessage.save();
+    await Notification.create({
+        senderId,
+        receiverId,
+        text,
+        type: "message",
+        is_read: false,
+    });
 
     res.status(201).json(newMessage)
   } catch (error) {
@@ -62,7 +69,5 @@ const sendMessage = async (req, res) => {
     res.status(500).json({message: "Internal server error"})
   }
 };
-
-
 
 module.exports = { getUsersForSidebar, getMessage, sendMessage };

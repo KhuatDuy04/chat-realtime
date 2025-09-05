@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
+const User = require("../models/user");
 
 const app = express();
 const server = http.createServer(app);
@@ -40,6 +41,32 @@ io.on('connection', (socket) => {
 
     io.emit('chat message', newMsg);
   });
+
+  socket.on('notification new', async (msg) => {
+    const sender = await User.findById(userId).select("name profilePic");
+
+    const newNoti = {
+        senderId: {
+          _id: sender._id,
+          name: sender.name,
+          profilePic: sender.profilePic,
+        },
+        receiverId: msg.receiverId,
+        text: msg.text,
+        type: "message",
+        is_read: false,
+        createdAt: new Date().toISOString(),
+    };
+
+    console.log("New notification:", newNoti);
+
+    // Gửi cho receiver nếu đang online
+    const receiverSocketId = userSocketMap[msg.receiverId];
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("notification new", newNoti);
+    }
+  });
+
 });
 
 module.exports = {io, app, server}

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "./util/axios.custiomize";
 import Header from "./components/layout/Header";
 import { Outlet } from "react-router-dom";
@@ -9,6 +9,8 @@ import { useSocket } from "./components/context/socket.context";
 
 function App() {
   const {setAuth, appLoading, setAppLoading } = useContext(AuthContext);
+  const [ notifications, setNotification ] = useState([]);
+  const { socket } = useSocket();
 
   const { onlineUsers, connectSocket } = useSocket();
 
@@ -60,6 +62,18 @@ function App() {
     fetchAccount();
   }, []);
 
+  useEffect(() => {
+      if (!socket) return;
+
+      socket.on("notification new", (noti) => {
+          setNotification((prev) => [...prev, noti]);
+      });
+
+      return () => {
+          socket.off("notification new");
+      };
+  }, [socket]);
+
   return (
     <>
       {appLoading === true ? 
@@ -71,9 +85,9 @@ function App() {
       : 
       <div className="tyn-body">
         <div className="tyn-root">
-          <Header />
+          <Header notifications={notifications} setNotification={setNotification}/>
           <div className="tyn-content tyn-content-full-height tyn-chat has-aside-base">
-            <Outlet context={{ onlineUsers }}/>
+            <Outlet context={{ onlineUsers, setNotification }}/>
           </div>
         </div>
         <Modal/>

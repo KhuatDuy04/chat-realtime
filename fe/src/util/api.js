@@ -49,6 +49,11 @@ const updatePic = (user) => {
     return axios.put(URL_API, user)
 }
 
+const getNotification = () => {
+    const URL_API = "/v1/api/notification";
+    return axios.get(URL_API)
+}
+
 export {
-    createUserApi, loginApi, getUserApi, getUsersForSidebar, getMessage, sendMessage, updateProfile, updatePic
+    createUserApi, loginApi, getUserApi, getUsersForSidebar, getMessage, sendMessage, updateProfile, updatePic, getNotification
 }

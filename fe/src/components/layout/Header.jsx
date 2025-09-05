@@ -2,8 +2,11 @@ import { React, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 import { useSocket } from "../context/socket.context";
+// import { useEffect } from "react";
+// import { getNotification } from "../../util/api";
+import dayjs from "dayjs";
 
-const Header = () => {
+const Header = ({ notifications, setNotification }) => {
   const navigate = useNavigate();
   const { auth, setAuth } = useContext(AuthContext);
   const { disconnectSocket } = useSocket();
@@ -20,6 +23,19 @@ const Header = () => {
     disconnectSocket()
     navigate("/login");
   }
+
+  // useEffect(() => {
+  //   const fetchNotification = async () => {
+  //     const res = await getNotification()
+  //     if (res) {
+  //       console.log("tb ben fe:",res);
+        
+  //       setNotification(res)
+  //     }
+
+  //   }
+  //   fetchNotification()
+  // }, [])
 
   return (
     <nav className="tyn-appbar">
@@ -41,39 +57,46 @@ const Header = () => {
                   <path d="M5.5 2A3.5 3.5 0 0 0 2 5.5v5A3.5 3.5 0 0 0 5.5 14h5a3.5 3.5 0 0 0 3.5-3.5V8a.5.5 0 0 1 1 0v2.5a4.5 4.5 0 0 1-4.5 4.5h-5A4.5 4.5 0 0 1 1 10.5v-5A4.5 4.5 0 0 1 5.5 1H8a.5.5 0 0 1 0 1z" />
                   <path d="M16 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
                 </svg>{/* app-indicator */}
-                <span className="d-none">Notifications</span>
+                <span className="d-none">Thông báo</span>
               </a>{/* .dropdown-toggle */}
               <div className="dropdown-menu dropdown-menu-rg dropdown-menu-end">
                 <div className="dropdown-head">
                   <div className="title">
-                    <h6>Notifications</h6>
+                    <h6>Thông báo</h6>
                   </div>
                   <ul className="nav nav-tabs nav-tabs-line">
                     <li className="nav-item">
-                      <button className="nav-link" data-bs-toggle="tab" data-bs-target="#notifications-unread" type="button"> Unread </button>
+                      <button className="nav-link" data-bs-toggle="tab" data-bs-target="#notifications-unread" type="button"> Chưa đọc </button>
                     </li>
                     <li className="nav-item">
-                      <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#notifications-all" type="button"> All </button>
+                      <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#notifications-all" type="button"> Tất cả </button>
                     </li>
                   </ul>
                 </div>{/* .dropdown-head */}
                 <div className="dropdown-gap">
                   <ul className="tyn-media-list gap gap-3">
-                    <li>
-                      <div className="tyn-media-group">
-                        <div className="tyn-media tyn-circle">
-                          <img src="../../src/assets/images/avatar/1.jpg" alt="" />
-                        </div>
-                        <div className="tyn-media-col">
-                          <div className="tyn-media-row">
-                            <span className="message"><strong>Phillip Burke</strong> Sent message</span>
+                    {notifications.map((noti, index) => (
+                      <li key={index}>
+                        <div className="tyn-media-group">
+                          <div className="tyn-media tyn-circle">
+                            <img src={noti.senderId.profilePic ? noti.senderId.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                           </div>
-                          <div className="tyn-media-row">
-                            <span className="meta">10 Hours ago</span>
+                          <div className="tyn-media-col">
+                            <div className="tyn-media-row">
+                              <span className="message"><strong className="me-2">{noti.senderId.name}</strong> Đã gửi đến bạn 1 tin nhắn</span>
+                            </div>
+                            <div className="tyn-media-row">
+                              <span className="message">{noti.text}</span>
+                            </div>
+                            <div className="tyn-media-row">
+                              <span className="meta">
+                                {dayjs(noti.createdAt).format("DD/MM/YYYY HH:mm")}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </li>
+                      </li>
+                    ))}
                   </ul>{/* .tyn-media-list */}
                 </div>{/* .dropdown-gap */}
               </div>{/* .dropdown-menu */}

@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { getMessage, getUsersForSidebar } from "../../util/api";
 import { notification } from "antd";
 
-const SideBar = ({ setMessage, setSender, onlineUsers }) => {
+const SideBar = ({ setMessage, setReceiver, onlineUsers }) => {
     const [dataSource, setDataSource] = useState([]);
+    const [filteredUsers, setFilteredUsers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         const fetchUser = async () => {
             const res = await getUsersForSidebar()
             if (res) {
                 setDataSource(res)
+                setFilteredUsers(res)
             }else{
                 notification.error({
                     message: "Unauthorized",
@@ -20,12 +23,26 @@ const SideBar = ({ setMessage, setSender, onlineUsers }) => {
         fetchUser();
     }, [])
 
+    useEffect(() => {
+        if (searchTerm.trim() === "") {
+            setFilteredUsers(dataSource);
+        } else {
+            const lowerSearch = searchTerm.toLowerCase();
+            setFilteredUsers(
+            dataSource.filter((user) =>
+                user.name.toLowerCase().includes(lowerSearch) ||
+                user.email.toLowerCase().includes(lowerSearch)
+            )
+            );
+        }
+    }, [searchTerm, dataSource]);
+
     const fetchMessage = async (user) => {
         try {
             const data = await getMessage(user._id);
             if (data) {
                 console.log("Message:", data);
-                setSender(user);
+                setReceiver(user);
                 setMessage(data);
             } else {
                 notification.error({
@@ -57,14 +74,14 @@ const SideBar = ({ setMessage, setSender, onlineUsers }) => {
                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
                         </svg>{/* search */}
                     </div>
-                    <input type="text" className="form-control form-control-solid" id="search" placeholder="Search contact / chat" />
+                    <input type="text" className="form-control form-control-solid" id="search" placeholder="Tìm kiếm người dùng" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
                     </div>
                 </div>
                 </div>{/* .tyn-aside-search */}
                 <div className="tab-content">
                 <div className="tab-pane show active" id="all-chats" tabIndex={0} role="tabpanel">
                     <ul className="tyn-aside-list">
-                        {dataSource.map((user) => (
+                        {filteredUsers.map((user) => (
                             <li key={user._id} className="tyn-aside-item js-toggle-main" onClick={() => fetchMessage(user)}>
                                 <div className="tyn-media-group">
                                 <div className="tyn-media tyn-size-lg">
@@ -84,8 +101,8 @@ const SideBar = ({ setMessage, setSender, onlineUsers }) => {
 
                                     </div>
                                     <div className="tyn-media-row has-dot-sap">
-                                    <p className="content">Liked that disco music</p>
-                                    <span className="meta">1 days</span>
+                                    {/* <p className="content">Liked that disco music</p>
+                                    <span className="meta">1 days</span> */}
                                     </div>
                                 </div>{/* .tyn-media-col */}
                                 <div className="tyn-media-option tyn-aside-item-option">

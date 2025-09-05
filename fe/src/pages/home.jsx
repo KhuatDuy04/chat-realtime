@@ -5,11 +5,14 @@ import { sendMessage } from '../util/api';
 import { useOutletContext } from 'react-router-dom';
 import emptyChat from "../assets/images/emty-chat.png";
 import { useSocket } from '../components/context/socket.context';
+import { useContext } from 'react';
+import { AuthContext } from '../components/context/auth.context';
 
 const HomePage = () => {
+    const { auth } = useContext(AuthContext)
     const { onlineUsers } = useOutletContext();
     const [message, setMessage] = useState([]);
-    const [sender, setSender] = useState([]);
+    const [receiver, setReceiver] = useState([]);
     const [form] = Form.useForm();
     const { socket } = useSocket();
     const messageEndRef = useRef(null)
@@ -41,16 +44,26 @@ const HomePage = () => {
         if (!text || text.trim() === '') return;
 
         try {
-            const res = await sendMessage(text, sender._id);
+            const res = await sendMessage(text, receiver._id);
 
             const newMsg = {
-            senderId: "CURRENT_USER_ID",
-            receiverId: sender._id,
-            text,
-            createdAt: new Date().toISOString(),
+                senderId: auth.user._id,
+                receiverId: receiver._id,
+                text,
+                createdAt: new Date().toISOString(),
+            };
+
+            const newNoti = {
+                senderId: auth.user._id,
+                receiverId: receiver._id,
+                text,
+                type: "message",
+                is_read: false,
+                createdAt: new Date().toISOString(),
             };
 
             socket.emit("chat message", newMsg);
+            socket.emit("notification new", newNoti);
 
             if (res) {
             notification.success({
@@ -87,10 +100,10 @@ const HomePage = () => {
 
     return (
         <>
-            <SideBar setMessage={setMessage}  setSender={setSender} onlineUsers={onlineUsers}/>
+            <SideBar setMessage={setMessage}  setReceiver={setReceiver} onlineUsers={onlineUsers}/>
             {/* {console.log("data ben home page:", message)}
             {console.log("nguoi nhan tin nhan ben home page:", sender)} */}
-            {sender.length !== 0 ? (
+            {receiver.length !== 0 ? (
                 <div className="tyn-main tyn-chat-content" id="tynMain">
                     <div className="tyn-chat-head">
                         <ul className="tyn-list-inline d-md-none ms-n1">
@@ -102,14 +115,14 @@ const HomePage = () => {
                         </ul>
                         <div className="tyn-media-group">
                         <div className="tyn-media tyn-size-lg d-none d-sm-inline-flex">
-                            <img src={sender?.profilePic != "" ? sender?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
+                            <img src={receiver?.profilePic != "" ? receiver?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                         </div>{/* .tyn-media */}
                         <div className="tyn-media tyn-size-rg d-sm-none">
-                            <img src={sender?.profilePic != "" ? sender?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
+                            <img src={receiver?.profilePic != "" ? receiver?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                         </div>{/* .tyn-media */}
                         <div className="tyn-media-col">
                             <div className="tyn-media-row">
-                            <h6 className="name">{sender?.name}</h6>
+                            <h6 className="name">{receiver?.name}</h6>
                             </div>
                             <div className="tyn-media-row has-dot-sap">
                             <span className="meta">Active</span>
@@ -166,20 +179,20 @@ const HomePage = () => {
 
 
                         {groupedMessages.map((group, groupIndex) => {
-                        const isMe = group.senderId !== sender._id;
+                        const isMe = group.senderId !== auth.user._id;
                         const isLast = groupIndex === 0;
 
                         return (
                             <div
                             key={groupIndex}
-                            className={`tyn-reply-item ${isMe ? "outgoing" : "incoming"}`}
+                            className={`tyn-reply-item ${isMe ? "incoming" : "outgoing"}`}
                             ref={isLast ? messageEndRef : null}
                             >
                             {/* avatar chỉ hiện với đối phương */}
-                            {!isMe && (
+                            {isMe && (
                                 <div className="tyn-reply-avatar">
                                 <div className="tyn-media tyn-size-md tyn-circle">
-                                    <img src={sender?.profilePic != "" ? sender?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
+                                    <img src={receiver?.profilePic != "" ? receiver?.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
                                 </div>
                                 </div>
                             )}
