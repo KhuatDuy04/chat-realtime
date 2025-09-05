@@ -30,7 +30,7 @@ const RegisterPage = () => {
 
   return (
     <div className="register-container">
-      <h1 className="register-logo">facebook</h1>
+      <h1 className="register-logo">Message</h1>
       <div className="register-box">
         <h2 className="register-title">Tạo tài khoản mới</h2>
         <p className="register-subtitle">Nhanh chóng và dễ dàng.</p>

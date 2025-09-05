@@ -137,10 +137,21 @@ const updateProfilePicService = async (profilePic, userId) => {
   }
 };
 
+const getAccountService = async (userId) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    return res
+      .status(404)
+      .json({ message: "Không tìm thấy user có id: ", userId });
+  }
+  return user;
+};
+
 module.exports = {
   createUserService,
   loginService,
   getUserService,
   updateProfileService,
   updateProfilePicService,
+  getAccountService,
 };

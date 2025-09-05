@@ -40,9 +40,9 @@ const LoginPage = () => {
       <div className="login-wrapper">
         {/* Left side */}
         <div className="login-left">
-          <h1 className="login-logo">facebook</h1>
+          <h1 className="login-logo">Message</h1>
           <p className="login-text">
-            Facebook giúp bạn kết nối và chia sẻ với mọi người trong cuộc sống
+            Message giúp bạn kết nối và chia sẻ với mọi người trong cuộc sống
             của bạn.
           </p>
         </div>

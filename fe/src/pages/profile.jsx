@@ -30,26 +30,35 @@ const Profile = () => {
             return;
         }
 
-        const maxSize = 2 * 1024 * 1024;
-        if (file.size > maxSize) {
-            notification.warning({
-                message: "File quá lớn",
-                description: "⚠️ Vui lòng chọn ảnh nhỏ hơn 2MB.",
-            });
-            return;
-        }
-
-        setAvatar(URL.createObjectURL(file));
-
         const reader = new FileReader();
         reader.readAsDataURL(file)
-
+        
         reader.onload = async () => {
             const base64Image = reader.result;
+            
+            const base64String = base64Image.split(",")[1];
+            const base64Size = (base64String.length * 3) / 4;
+            const maxSize = 2 * 1024 * 1024;
+            if (base64Size  > maxSize) {
+                notification.warning({
+                    message: "File quá lớn",
+                    description: "⚠️ Vui lòng chọn ảnh nhỏ hơn 2MB.",
+                });
+                return;
+            }
+            
             const res = await updatePic({profilePic: base64Image, userId: auth.user._id})
             if (res) {
+                setAvatar(URL.createObjectURL(file));
                 notification.success({ message: "Cập nhật ảnh thành công" });
                 setAvatar(res.user.profilePic);
+                setAuth((prev) => ({
+                ...prev,
+                user: {
+                    ...prev.user,
+                    profilePic: res.user.profilePic
+                }
+                }));
             }
         }
         } catch (err) {
@@ -57,10 +66,23 @@ const Profile = () => {
         }
     };
 
-    useEffect(() => {
-        console.log("check auth >>>>>", auth);
+    const onFinish = async (values) => {
+        const res = await updateProfile(values);
+        
+        if (res) {
+            notification.success({ message: "Cập nhật thành công" });
 
+            setAuth((prev) => ({
+            ...prev,
+            user: res,
+            }));
+        }
+    };
+
+    useEffect(() => {
         if (auth?.user) {
+        console.log(auth);
+            
         form.setFieldsValue({
             _id: auth.user._id,
             name: auth.user.name,
@@ -73,21 +95,6 @@ const Profile = () => {
         }
     }, [auth, form]);
     
-    const onFinish = async (values) => {
-        const res = await updateProfile(values);
-        
-        if (res) {
-            notification.success({ message: "Cập nhật thành công" });
-
-            setAuth((prev) => ({
-            ...prev,
-            user: res,
-            }));
-
-            localStorage.setItem("user", JSON.stringify(res));
-        }
-    };
-
     return (
         <div className="tyn-content  tyn-content-page">
             <div className="tyn-main tyn-content-inner" id="tynMain">

@@ -65,7 +65,7 @@ const SideBar = ({ setMessage, setSender, onlineUsers }) => {
                 <div className="tab-pane show active" id="all-chats" tabIndex={0} role="tabpanel">
                     <ul className="tyn-aside-list">
                         {dataSource.map((user) => (
-                            <li className="tyn-aside-item js-toggle-main" onClick={() => fetchMessage(user)}>
+                            <li key={user._id} className="tyn-aside-item js-toggle-main" onClick={() => fetchMessage(user)}>
                                 <div className="tyn-media-group">
                                 <div className="tyn-media tyn-size-lg">
                                     <img src={user.profilePic != "" ? user.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
