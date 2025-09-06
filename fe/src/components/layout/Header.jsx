@@ -2,11 +2,9 @@ import { React, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 import { useSocket } from "../context/socket.context";
-// import { useEffect } from "react";
-// import { getNotification } from "../../util/api";
-import dayjs from "dayjs";
+import Notification from "./Notification";
 
-const Header = ({ notifications, setNotification }) => {
+const Header = ({ notifications }) => {
   const navigate = useNavigate();
   const { auth, setAuth } = useContext(AuthContext);
   const { disconnectSocket } = useSocket();
@@ -23,19 +21,6 @@ const Header = ({ notifications, setNotification }) => {
     disconnectSocket()
     navigate("/login");
   }
-
-  // useEffect(() => {
-  //   const fetchNotification = async () => {
-  //     const res = await getNotification()
-  //     if (res) {
-  //       console.log("tb ben fe:",res);
-        
-  //       setNotification(res)
-  //     }
-
-  //   }
-  //   fetchNotification()
-  // }, [])
 
   return (
     <nav className="tyn-appbar">
@@ -60,45 +45,9 @@ const Header = ({ notifications, setNotification }) => {
                 <span className="d-none">Thông báo</span>
               </a>{/* .dropdown-toggle */}
               <div className="dropdown-menu dropdown-menu-rg dropdown-menu-end">
-                <div className="dropdown-head">
-                  <div className="title">
-                    <h6>Thông báo</h6>
-                  </div>
-                  <ul className="nav nav-tabs nav-tabs-line">
-                    <li className="nav-item">
-                      <button className="nav-link" data-bs-toggle="tab" data-bs-target="#notifications-unread" type="button"> Chưa đọc </button>
-                    </li>
-                    <li className="nav-item">
-                      <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#notifications-all" type="button"> Tất cả </button>
-                    </li>
-                  </ul>
-                </div>{/* .dropdown-head */}
-                <div className="dropdown-gap">
-                  <ul className="tyn-media-list gap gap-3">
-                    {notifications.map((noti, index) => (
-                      <li key={index}>
-                        <div className="tyn-media-group">
-                          <div className="tyn-media tyn-circle">
-                            <img src={noti.senderId.profilePic ? noti.senderId.profilePic : "../../src/assets/images/avatar/no-image.png"} alt="" />
-                          </div>
-                          <div className="tyn-media-col">
-                            <div className="tyn-media-row">
-                              <span className="message"><strong className="me-2">{noti.senderId.name}</strong> Đã gửi đến bạn 1 tin nhắn</span>
-                            </div>
-                            <div className="tyn-media-row">
-                              <span className="message">{noti.text}</span>
-                            </div>
-                            <div className="tyn-media-row">
-                              <span className="meta">
-                                {dayjs(noti.createdAt).format("DD/MM/YYYY HH:mm")}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>{/* .tyn-media-list */}
-                </div>{/* .dropdown-gap */}
+
+                <Notification notifications={notifications} />
+                
               </div>{/* .dropdown-menu */}
             </li>{/* .tyn-appbar-item */}
             <li className="tyn-appbar-item">

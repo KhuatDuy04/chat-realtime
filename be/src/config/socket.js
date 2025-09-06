@@ -30,16 +30,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('chat message', (msg) => {
+    const receiverSocketId = userSocketMap[msg.receiverId];
     const newMsg = {
       senderId: userId,
-      receiverId: msg.receiverId,
+      receiverId: receiverSocketId,
       text: msg.text,
       createdAt: new Date().toISOString(),
     };
 
-    console.log("New message:", newMsg);
+    // console.log("New message:", newMsg);
 
-    io.emit('chat message', newMsg);
+    io.to(receiverSocketId).emit('chat message', newMsg);
   });
 
   socket.on('notification new', async (msg) => {
@@ -58,7 +59,7 @@ io.on('connection', (socket) => {
         createdAt: new Date().toISOString(),
     };
 
-    console.log("New notification:", newNoti);
+    // console.log("New notification:", newNoti);
 
     // Gửi cho receiver nếu đang online
     const receiverSocketId = userSocketMap[msg.receiverId];
