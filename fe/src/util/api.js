@@ -31,10 +31,11 @@ const getMessage = (id) => {
     return axios.get(URL_API)
 }
 
-const sendMessage = (text, receiverId) => {
+const sendMessage = (text, receiverId, image) => {
     const URL_API = "/v1/api/message/send/" + receiverId;
     const data = {
         text,
+        image
     }
     return axios.post(URL_API, data)
 }

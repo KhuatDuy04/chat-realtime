@@ -35,12 +35,14 @@ io.on('connection', (socket) => {
       senderId: userId,
       receiverId: receiverSocketId,
       text: msg.text,
+      image: msg.image || null,
       createdAt: new Date().toISOString(),
     };
 
     // console.log("New message:", newMsg);
 
     io.to(receiverSocketId).emit('chat message', newMsg);
+    io.to(socket.id).emit('chat message', newMsg);
   });
 
   socket.on('notification new', async (msg) => {
