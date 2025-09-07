@@ -37,13 +37,16 @@ const Header = ({ notifications }) => {
           <div className="tyn-appbar-nav tyn-appbar-nav-start"></div>
           <ul className="tyn-appbar-nav tyn-appbar-nav-end mt-2">
             <li className="tyn-appbar-item">
-              <a className="tyn-appbar-link dropdown-toggle" data-bs-toggle="dropdown" href="#" data-bs-offset="0,10" data-bs-auto-close="outside">
+              <button type="button" className="tyn-appbar-link dropdown-toggle position-relative border-0" data-bs-toggle="dropdown" href="#" data-bs-offset="0,10" data-bs-auto-close="outside">
                 <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} fill="currentColor" className="bi bi-app-indicator" viewBox="0 0 16 16">
                   <path d="M5.5 2A3.5 3.5 0 0 0 2 5.5v5A3.5 3.5 0 0 0 5.5 14h5a3.5 3.5 0 0 0 3.5-3.5V8a.5.5 0 0 1 1 0v2.5a4.5 4.5 0 0 1-4.5 4.5h-5A4.5 4.5 0 0 1 1 10.5v-5A4.5 4.5 0 0 1 5.5 1H8a.5.5 0 0 1 0 1z" />
                   <path d="M16 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
                 </svg>{/* app-indicator */}
-                <span className="d-none">Thông báo</span>
-              </a>{/* .dropdown-toggle */}
+                <span class="position-absolute top-1 start-100 translate-middle badge rounded-pill bg-danger">
+                  {notifications.length > 99 ? "99+" : notifications.length}
+                  <span class="visually-hidden">thông báo</span>
+                </span>
+              </button>{/* .dropdown-toggle */}
               <div className="dropdown-menu dropdown-menu-rg dropdown-menu-end">
 
                 <Notification notifications={notifications} />

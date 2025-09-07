@@ -18,8 +18,8 @@ const LoginPage = () => {
     if (res && res.EC === 0) {
       localStorage.setItem("access_token", res.access_token);
       notification.success({
-        message: "LOGIN USER",
-        description: "Success",
+        message: "Đăng nhập",
+        description: "Thành công",
       });
       setAuth({
         isAuthenticated: true,
@@ -29,7 +29,7 @@ const LoginPage = () => {
       navigate("/");
     } else {
       notification.error({
-        message: "ERROR LOGIN USER",
+        message: "Đã có lỗi xảy ra",
         description: res?.EM ?? "error",
       });
     }
@@ -52,14 +52,24 @@ const LoginPage = () => {
           <Form layout="vertical" onFinish={onFinish} autoComplete="off" style={{ width: "100%" }}>
             <Form.Item
               name="email"
-              rules={[{ required: true, message: "Please input your email!" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập email!" },
+                { type: "email", message: "Email không hợp lệ!" },
+              ]}
             >
               <Input placeholder="Email" size="large" />
             </Form.Item>
 
             <Form.Item
               name="password"
-              rules={[{ required: true, message: "Please input your password!" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập mật khẩu!" },
+                { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" },
+                {
+                  pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*$/,
+                  message: "Mật khẩu cần có chữ hoa, chữ thường và số!"
+                }
+              ]}
             >
               <Input.Password placeholder="Mật khẩu" size="large" />
             </Form.Item>
@@ -76,9 +86,9 @@ const LoginPage = () => {
               </Button>
             </Form.Item>
 
-            <div className="login-forgot">
+            {/* <div className="login-forgot">
               <a href="#">Quên mật khẩu?</a>
-            </div>
+            </div> */}
 
             <hr />
 

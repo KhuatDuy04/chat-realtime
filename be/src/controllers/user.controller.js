@@ -18,6 +18,8 @@ const getUser = async (req, res) => {
 }
 
 const getAccount = async (req, res) => {
+    console.log("id user",req.user._id);
+    
     const user = await getAccountService(req.user._id)
     return res.status(200).json(user)
 }

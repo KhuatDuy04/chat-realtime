@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "./util/axios.custiomize";
 import Header from "./components/layout/Header";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { AuthContext } from "./components/context/auth.context";
 import { Flex, Spin } from "antd";
 import Modal from "./components/layout/Modal";
@@ -11,6 +11,7 @@ function App() {
   const {setAuth, appLoading, setAppLoading } = useContext(AuthContext);
   const [ notifications, setNotification ] = useState([]);
   const { socket } = useSocket();
+  const [redirect, setRedirect] = useState(false);
 
   const { onlineUsers, connectSocket } = useSocket();
 
@@ -37,11 +38,23 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      setRedirect(true);
+      return;
+    }
+
     const fetchAccount = async () => {
       setAppLoading(true);
-      const res = await axios.get(`/v1/api/account`);
-      
-      if (res && !res.message) {
+      try {
+        const res = await axios.get(`/v1/api/account`);
+
+        if (res.message) {
+          localStorage.removeItem("access_token");
+          setRedirect(true);
+          return;
+        }
+
         setAuth({
           isAuthenticated: true,
           user: {
@@ -55,12 +68,18 @@ function App() {
         });
 
         connectSocket(res._id);
+      } catch (error) {
+        console.error("Lấy thông tin đăng nhập thất bại:", error);
+        localStorage.removeItem("access_token");
+        setRedirect(true);
+      } finally {
+        setAppLoading(false);
       }
-      setAppLoading(false);
     };
 
     fetchAccount();
   }, []);
+
 
   useEffect(() => {
       if (!socket) return;
@@ -73,6 +92,10 @@ function App() {
           socket.off("notification new");
       };
   }, [socket]);
+
+  if (redirect) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <>
